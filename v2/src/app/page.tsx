@@ -1,6 +1,5 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import CustomCursor from "@/components/layout/CustomCursor";
 
 import Hero from "@/components/sections/Hero";
 import About from "@/components/sections/About";
@@ -14,7 +13,6 @@ import Contact from "@/components/sections/Contact";
 export default function Home() {
   return (
     <>
-      <CustomCursor />
       <Navbar />
       <main className="flex-1 w-full relative">
         <Hero />
