@@ -28,7 +28,6 @@ function SkillMeter({ name, percent }: { name: string; percent: number }) {
     <div className="space-y-1.5 w-full py-2 group/meter">
       <div className="flex justify-between text-xs font-mono">
         <span className="text-white/70 group-hover/meter:text-primary transition-colors">{name}</span>
-        <span className="text-white/40">{percent}%</span>
       </div>
       <div ref={barRef} className="h-[3px] w-full bg-white/5 rounded-full overflow-hidden relative border border-white/5 shadow-inner">
         <motion.div
