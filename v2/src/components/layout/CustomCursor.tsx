@@ -5,9 +5,14 @@ import { useEffect, useRef } from "react";
 export default function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
+  const rippleRef = useRef<HTMLDivElement>(null);
+  const labelRef = useRef<HTMLDivElement>(null);
 
   const mousePos = useRef({ x: -100, y: -100, targetX: -100, targetY: -100 });
-  const isHovered = useRef(false);
+  const ringPos = useRef({ x: -100, y: -100, vx: 0, vy: 0 });
+  
+  // Hover states: "none" | "button" | "project" | "link"
+  const hoverState = useRef<"none" | "button" | "project" | "link">("none");
   const isVisible = useRef(false);
 
   useEffect(() => {
@@ -25,9 +30,17 @@ export default function CustomCursor() {
 
     const dot = dotRef.current;
     const ring = ringRef.current;
-    if (!dot || !ring) return;
+    const ripple = rippleRef.current;
+    const label = labelRef.current;
+    if (!dot || !ring || !ripple || !label) return;
 
-    // 1. Mouse Event Listeners
+    // Spring physics configuration
+    const spring = {
+      stiffness: 0.16, // Snappy but elastic stiffness
+      damping: 0.62,   // Damping coefficient for premium inertia
+    };
+
+    // 1. Mouse Move Listener
     const handleMouseMove = (e: MouseEvent) => {
       mousePos.current.targetX = e.clientX;
       mousePos.current.targetY = e.clientY;
@@ -43,36 +56,81 @@ export default function CustomCursor() {
       }
     };
 
+    // 2. Mouse Over Listener (State tracking & DOM styling update)
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       if (!target) return;
 
-      // Check if hovering a link, button, role=button, or element with interactive class
-      const isClickable =
-        target.tagName === "A" ||
-        target.tagName === "BUTTON" ||
-        target.closest("a") ||
-        target.closest("button") ||
-        target.classList.contains("interactive") ||
-        target.getAttribute("role") === "button";
+      const isButton = target.tagName === "BUTTON" || target.closest("button") || target.getAttribute("role") === "button";
+      const isProjectCard = target.closest("#projects") && !target.closest("a") && !target.closest("button");
+      const isLink = target.tagName === "A" || target.closest("a") || target.classList.contains("interactive");
 
-      if (isClickable) {
-        if (!isHovered.current) {
-          isHovered.current = true;
-          // Transition styles for hovered state
+      if (isButton) {
+        if (hoverState.current !== "button") {
+          hoverState.current = "button";
+          // Button state styles
+          dot.style.transform = `translate3d(${mousePos.current.targetX}px, ${mousePos.current.targetY}px, 0) translate(-50%, -50%) scale(0.6)`;
           dot.style.backgroundColor = "rgb(168, 85, 247)"; // Purple
-          ring.style.borderColor = "rgba(168, 85, 247, 0.5)";
+          
+          ring.style.borderColor = "rgba(168, 85, 247, 0.4)";
           ring.style.backgroundColor = "rgba(168, 85, 247, 0.08)";
+          
+          label.innerText = "Click";
+          label.style.opacity = "1";
+        }
+      } else if (isProjectCard) {
+        if (hoverState.current !== "project") {
+          hoverState.current = "project";
+          // Project Card state styles
+          dot.style.transform = `translate3d(${mousePos.current.targetX}px, ${mousePos.current.targetY}px, 0) translate(-50%, -50%) scale(0)`;
+          
+          ring.style.borderColor = "rgba(6, 182, 212, 0.5)";
+          ring.style.backgroundColor = "rgba(6, 182, 212, 0.08)";
+          
+          label.innerText = "View Project";
+          label.style.opacity = "1";
+        }
+      } else if (isLink) {
+        if (hoverState.current !== "link") {
+          hoverState.current = "link";
+          // Link state styles
+          dot.style.transform = `translate3d(${mousePos.current.targetX}px, ${mousePos.current.targetY}px, 0) translate(-50%, -50%) scale(1.5)`;
+          dot.style.backgroundColor = "rgb(168, 85, 247)"; // Purple
+          
+          ring.style.borderColor = "rgba(168, 85, 247, 0.3)";
+          ring.style.backgroundColor = "rgba(168, 85, 247, 0.04)";
+          
+          label.style.opacity = "0";
         }
       } else {
-        if (isHovered.current) {
-          isHovered.current = false;
+        if (hoverState.current !== "none") {
+          hoverState.current = "none";
           // Restore standard styles
+          dot.style.transform = `translate3d(${mousePos.current.targetX}px, ${mousePos.current.targetY}px, 0) translate(-50%, -50%) scale(1.0)`;
           dot.style.backgroundColor = "rgb(6, 182, 212)"; // Cyan
+          
           ring.style.borderColor = "rgba(6, 182, 212, 0.4)";
-          ring.style.backgroundColor = "rgba(6, 182, 212, 0.04)";
+          ring.style.backgroundColor = "rgba(6, 182, 212, 0.03)";
+          
+          label.style.opacity = "0";
         }
       }
+    };
+
+    // 3. Mouse Down (Click Ripple)
+    const handleMouseDown = () => {
+      // Position ripple at cursor coordinates
+      ripple.style.transform = `translate3d(${mousePos.current.targetX}px, ${mousePos.current.targetY}px, 0) translate(-50%, -50%) scale(0.5)`;
+      ripple.style.transition = "none";
+      ripple.style.opacity = "0.8";
+
+      // Trigger reflow to apply styling immediately
+      void ripple.offsetHeight;
+
+      // Animate expansion and fade out via GPU
+      ripple.style.transition = "transform 0.4s cubic-bezier(0.1, 0.8, 0.3, 1), opacity 0.4s ease-out";
+      ripple.style.transform = `translate3d(${mousePos.current.targetX}px, ${mousePos.current.targetY}px, 0) translate(-50%, -50%) scale(2.8)`;
+      ripple.style.opacity = "0";
     };
 
     const handleMouseLeaveWindow = () => {
@@ -89,28 +147,43 @@ export default function CustomCursor() {
 
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mouseover", handleMouseOver);
+    window.addEventListener("mousedown", handleMouseDown);
     document.addEventListener("mouseleave", handleMouseLeaveWindow);
     document.addEventListener("mouseenter", handleMouseEnterWindow);
 
     // Initialize position off-screen
     mousePos.current.x = window.innerWidth / 2;
     mousePos.current.y = window.innerHeight / 2;
+    ringPos.current.x = window.innerWidth / 2;
+    ringPos.current.y = window.innerHeight / 2;
 
-    // 2. High-Performance GPU Animation Loop (Lerp tracking for outer ring)
+    // 4. Spring Physics Loop for Outer Ring
     let animationId: number;
 
     const tick = () => {
-      // Snap factor (higher is snappier, lower is smoother)
-      const lerpFactor = 0.22;
+      // Calculate spring forces (Hooke's Law: F = -kx)
+      const dx = mousePos.current.targetX - ringPos.current.x;
+      const dy = mousePos.current.targetY - ringPos.current.y;
       
-      mousePos.current.x += (mousePos.current.targetX - mousePos.current.x) * lerpFactor;
-      mousePos.current.y += (mousePos.current.targetY - mousePos.current.y) * lerpFactor;
+      const ax = dx * spring.stiffness;
+      const ay = dy * spring.stiffness;
 
-      // Scale up outer ring when hovering clickable elements
-      const scale = isHovered.current ? 1.8 : 1.0;
+      // Update velocity with damping
+      ringPos.current.vx = (ringPos.current.vx + ax) * spring.damping;
+      ringPos.current.vy = (ringPos.current.vy + ay) * spring.damping;
 
-      // Leverage hardware-accelerated translate3d and scale
-      ring.style.transform = `translate3d(${mousePos.current.x}px, ${mousePos.current.y}px, 0) translate(-50%, -50%) scale(${scale})`;
+      // Update position
+      ringPos.current.x += ringPos.current.vx;
+      ringPos.current.y += ringPos.current.vy;
+
+      // Determine ring scale based on active hover element
+      const scale = hoverState.current === "button" ? 1.8 
+                  : hoverState.current === "project" ? 2.8
+                  : hoverState.current === "link" ? 1.3
+                  : 1.0;
+
+      // Move and scale the outer ring using transform
+      ring.style.transform = `translate3d(${ringPos.current.x}px, ${ringPos.current.y}px, 0) translate(-50%, -50%) scale(${scale})`;
 
       animationId = requestAnimationFrame(tick);
     };
@@ -120,6 +193,7 @@ export default function CustomCursor() {
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseover", handleMouseOver);
+      window.removeEventListener("mousedown", handleMouseDown);
       document.removeEventListener("mouseleave", handleMouseLeaveWindow);
       document.removeEventListener("mouseenter", handleMouseEnterWindow);
       cancelAnimationFrame(animationId);
@@ -128,7 +202,7 @@ export default function CustomCursor() {
 
   return (
     <>
-      {/* Hide hardware cursor when custom one is rendering on desktop viewports */}
+      {/* Hide native hardware cursor when custom one is active on desktop */}
       <style dangerouslySetInnerHTML={{__html: `
         @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
           html, body, a, button, select, input, textarea, [role="button"], [class*="interactive"], iframe {
@@ -139,29 +213,52 @@ export default function CustomCursor() {
 
       {/* Main Cursor Elements Container */}
       <div className="hidden lg:block pointer-events-none fixed inset-0 z-[9999] overflow-hidden">
-        {/* Primary Dot */}
+        {/* Primary Dot (Default 8px) */}
         <div
           ref={dotRef}
-          className="fixed w-2 h-2 rounded-full z-[10000] mix-blend-screen transition-colors duration-200 ease-out"
+          className="fixed w-2 h-2 rounded-full z-[10000] mix-blend-screen transition-all duration-300 ease-out"
           style={{
             backgroundColor: "rgb(6, 182, 212)",
-            transform: "translate3d(-100px, -100px, 0) translate(-50%, -50%)",
-            willChange: "transform",
-            opacity: 0,
-            transitionProperty: "background-color",
-          }}
-        />
-        {/* Thin Outer Ring */}
-        <div
-          ref={ringRef}
-          className="fixed w-6 h-6 border rounded-full z-[9999] transition-all duration-300 ease-out"
-          style={{
-            backgroundColor: "rgba(6, 182, 212, 0.04)",
-            borderColor: "rgba(6, 182, 212, 0.4)",
             transform: "translate3d(-100px, -100px, 0) translate(-50%, -50%) scale(1)",
             willChange: "transform",
             opacity: 0,
+            transitionProperty: "background-color, transform",
+          }}
+        />
+        
+        {/* Glowing Thin Outer Ring (Default 28px) */}
+        <div
+          ref={ringRef}
+          className="fixed w-7 h-7 border rounded-full z-[9999] flex items-center justify-center transition-all duration-300 ease-out"
+          style={{
+            backgroundColor: "rgba(6, 182, 212, 0.03)",
+            borderColor: "rgba(6, 182, 212, 0.4)",
+            transform: "translate3d(-100px, -100px, 0) translate(-50%, -50%) scale(1)",
+            boxShadow: "0 0 8px rgba(6, 182, 212, 0.12), 0 0 8px rgba(168, 85, 247, 0.12)", // Blue-purple subtle glow
+            willChange: "transform",
+            opacity: 0,
             transitionProperty: "background-color, border-color",
+          }}
+        >
+          {/* Action text label (Click / View Project) */}
+          <div
+            ref={labelRef}
+            className="text-[6.5px] font-mono font-black tracking-widest text-white uppercase opacity-0 transition-opacity duration-300 ease-out text-center px-1 select-none pointer-events-none"
+            style={{
+              textShadow: "0 0 4px rgba(0, 0, 0, 0.6)",
+              lineHeight: "1.1",
+            }}
+          />
+        </div>
+
+        {/* Snappy Click Ripple */}
+        <div
+          ref={rippleRef}
+          className="fixed w-6 h-6 border rounded-full z-[9998] pointer-events-none opacity-0"
+          style={{
+            borderColor: "rgba(6, 182, 212, 0.6)",
+            transform: "translate3d(-100px, -100px, 0) translate(-50%, -50%) scale(0.5)",
+            willChange: "transform, opacity",
           }}
         />
       </div>

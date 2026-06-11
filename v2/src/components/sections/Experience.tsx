@@ -13,7 +13,7 @@ export default function Experience() {
       company: "TEDxGCEM",
       duration: "2025",
       location: "Bengaluru, IN",
-      description: "Coordinated stage operations, high-fidelity technical AV routing, and media pipeline logistics to guarantee smooth event delivery for 500+ attendees.",
+      description: "Coordinated stage operations, high-fidelity technical AV routing, and media pipeline logistics to guarantee smooth event delivery for attendees.",
     },
     {
       role: "Participant",
