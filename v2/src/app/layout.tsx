@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Sora, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import PageLoader from "@/components/layout/PageLoader";
+import ScrollProgress from "@/components/layout/ScrollProgress";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -32,8 +34,20 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${sora.variable} ${jetbrainsMono.variable} dark antialiased`}
     >
-      <body className="min-h-screen flex flex-col bg-background text-foreground font-sans overflow-x-hidden">
-        {children}
+      <body className="min-h-screen flex flex-col bg-background text-foreground font-sans overflow-x-hidden relative">
+        {/* Global Page Loader */}
+        <PageLoader />
+        
+        {/* Global Scroll Progress */}
+        <ScrollProgress />
+
+        {/* Global Background Effects */}
+        <div className="fixed inset-0 aurora-container opacity-30 pointer-events-none z-0" />
+        <div className="fixed inset-0 noise-overlay pointer-events-none z-[1]" />
+
+        <div className="relative z-10 flex-1 flex flex-col">
+          {children}
+        </div>
       </body>
     </html>
   );
