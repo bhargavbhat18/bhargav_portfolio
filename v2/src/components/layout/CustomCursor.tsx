@@ -1,154 +1,116 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-
-interface TrailPoint {
-  x: number;
-  y: number;
-  alpha: number;
-  size: number;
-}
+import { useEffect, useRef } from "react";
 
 export default function CustomCursor() {
-  const [isHovered, setIsHovered] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-  
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
 
-  const pointsRef = useRef<TrailPoint[]>([]);
-  const mouseRef = useRef({ x: -100, y: -100 });
-  const ringRefPos = useRef({ x: -100, y: -100 });
+  const mousePos = useRef({ x: -100, y: -100, targetX: -100, targetY: -100 });
+  const isHovered = useRef(false);
+  const isVisible = useRef(false);
 
   useEffect(() => {
+    // Disable custom cursor on mobile/tablet touch devices
+    const isTouchDevice = 
+      "ontouchstart" in window || 
+      navigator.maxTouchPoints > 0 || 
+      (window.matchMedia && window.matchMedia("(max-width: 1023px)").matches);
+      
+    if (isTouchDevice) return;
+
+    // Respect prefers-reduced-motion
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) return;
+
+    const dot = dotRef.current;
+    const ring = ringRef.current;
+    if (!dot || !ring) return;
+
     // 1. Mouse Event Listeners
     const handleMouseMove = (e: MouseEvent) => {
-      mouseRef.current = { x: e.clientX, y: e.clientY };
-      
-      // OPTIMIZATION: Update Primary Dot position instantly inside mousemove callback!
-      // This bypasses the 1-frame requestAnimationFrame scheduling delay completely.
-      if (dotRef.current) {
-        dotRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate(-50%, -50%)`;
+      mousePos.current.targetX = e.clientX;
+      mousePos.current.targetY = e.clientY;
+
+      // Update primary dot position instantly inside mousemove callback
+      // This eliminates the 1-frame scheduling delay of requestAnimationFrame
+      dot.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate(-50%, -50%)`;
+
+      if (!isVisible.current) {
+        isVisible.current = true;
+        dot.style.opacity = "1";
+        ring.style.opacity = "1";
       }
-      
-      if (!isVisible) setIsVisible(true);
     };
 
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      if (
+      if (!target) return;
+
+      // Check if hovering a link, button, role=button, or element with interactive class
+      const isClickable =
         target.tagName === "A" ||
         target.tagName === "BUTTON" ||
         target.closest("a") ||
         target.closest("button") ||
         target.classList.contains("interactive") ||
-        target.getAttribute("role") === "button"
-      ) {
-        setIsHovered(true);
+        target.getAttribute("role") === "button";
+
+      if (isClickable) {
+        if (!isHovered.current) {
+          isHovered.current = true;
+          // Transition styles for hovered state
+          dot.style.backgroundColor = "rgb(168, 85, 247)"; // Purple
+          ring.style.borderColor = "rgba(168, 85, 247, 0.5)";
+          ring.style.backgroundColor = "rgba(168, 85, 247, 0.08)";
+        }
       } else {
-        setIsHovered(false);
+        if (isHovered.current) {
+          isHovered.current = false;
+          // Restore standard styles
+          dot.style.backgroundColor = "rgb(6, 182, 212)"; // Cyan
+          ring.style.borderColor = "rgba(6, 182, 212, 0.4)";
+          ring.style.backgroundColor = "rgba(6, 182, 212, 0.04)";
+        }
       }
     };
 
     const handleMouseLeaveWindow = () => {
-      setIsVisible(false);
+      isVisible.current = false;
+      dot.style.opacity = "0";
+      ring.style.opacity = "0";
+    };
+
+    const handleMouseEnterWindow = () => {
+      isVisible.current = true;
+      dot.style.opacity = "1";
+      ring.style.opacity = "1";
     };
 
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mouseover", handleMouseOver);
     document.addEventListener("mouseleave", handleMouseLeaveWindow);
+    document.addEventListener("mouseenter", handleMouseEnterWindow);
 
-    // 2. Canvas Setup
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    // Initialize position off-screen
+    mousePos.current.x = window.innerWidth / 2;
+    mousePos.current.y = window.innerHeight / 2;
 
+    // 2. High-Performance GPU Animation Loop (Lerp tracking for outer ring)
     let animationId: number;
 
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
-
-    // 3. Combined GPU Animation Loop (Direct DOM Updates)
     const tick = () => {
-      // Update Snappy Outer Ring Position (Lerp tracking)
-      const lerpFactor = 0.35; // Faster snappy follow factor
-      ringRefPos.current.x += (mouseRef.current.x - ringRefPos.current.x) * lerpFactor;
-      ringRefPos.current.y += (mouseRef.current.y - ringRefPos.current.y) * lerpFactor;
+      // Snap factor (higher is snappier, lower is smoother)
+      const lerpFactor = 0.22;
+      
+      mousePos.current.x += (mousePos.current.targetX - mousePos.current.x) * lerpFactor;
+      mousePos.current.y += (mousePos.current.targetY - mousePos.current.y) * lerpFactor;
 
-      if (ringRef.current) {
-        ringRef.current.style.transform = `translate3d(${ringRefPos.current.x}px, ${ringRefPos.current.y}px, 0) translate(-50%, -50%)`;
-      }
+      // Scale up outer ring when hovering clickable elements
+      const scale = isHovered.current ? 1.8 : 1.0;
 
-      // Canvas Trail drawing
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      if (isVisible) {
-        // Add new point based on current mouse position
-        pointsRef.current.push({
-          x: mouseRef.current.x,
-          y: mouseRef.current.y,
-          alpha: 1,
-          size: isHovered ? 12 : 6,
-        });
-      }
-
-      // Limit array size
-      if (pointsRef.current.length > 25) {
-        pointsRef.current.shift();
-      }
-
-      // Update and draw points
-      for (let i = 0; i < pointsRef.current.length; i++) {
-        const p = pointsRef.current[i];
-        p.alpha -= 0.04;
-        p.size *= 0.94; // shrink over time
-
-        if (p.alpha <= 0 || p.size <= 0.2) {
-          pointsRef.current.splice(i, 1);
-          i--;
-          continue;
-        }
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        
-        // Custom neon cyan-purple gradient trail
-        const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size);
-        const colorStart = isHovered 
-          ? `rgba(168, 85, 247, ${p.alpha * 0.4})` // Purple hover
-          : `rgba(6, 182, 212, ${p.alpha * 0.4})`; // Cyan standard
-        
-        gradient.addColorStop(0, colorStart);
-        gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
-        
-        ctx.fillStyle = gradient;
-        ctx.fill();
-      }
-
-      // Draw connecting glowing path line
-      if (pointsRef.current.length > 1) {
-        ctx.beginPath();
-        ctx.moveTo(pointsRef.current[0].x, pointsRef.current[0].y);
-        for (let i = 1; i < pointsRef.current.length; i++) {
-          const xc = (pointsRef.current[i].x + pointsRef.current[i - 1].x) / 2;
-          const yc = (pointsRef.current[i].y + pointsRef.current[i - 1].y) / 2;
-          ctx.quadraticCurveTo(pointsRef.current[i - 1].x, pointsRef.current[i - 1].y, xc, yc);
-        }
-        
-        const strokeColor = isHovered ? "rgba(168, 85, 247, 0.15)" : "rgba(6, 182, 212, 0.15)";
-        ctx.strokeStyle = strokeColor;
-        ctx.lineWidth = isHovered ? 4 : 2;
-        ctx.shadowBlur = 4;
-        ctx.shadowColor = isHovered ? "rgba(168, 85, 247, 0.5)" : "rgba(6, 182, 212, 0.5)";
-        ctx.stroke();
-        ctx.shadowBlur = 0; // Reset
-      }
+      // Leverage hardware-accelerated translate3d and scale
+      ring.style.transform = `translate3d(${mousePos.current.x}px, ${mousePos.current.y}px, 0) translate(-50%, -50%) scale(${scale})`;
 
       animationId = requestAnimationFrame(tick);
     };
@@ -159,52 +121,47 @@ export default function CustomCursor() {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseover", handleMouseOver);
       document.removeEventListener("mouseleave", handleMouseLeaveWindow);
-      window.removeEventListener("resize", resizeCanvas);
+      document.removeEventListener("mouseenter", handleMouseEnterWindow);
       cancelAnimationFrame(animationId);
     };
-  }, [isVisible, isHovered]);
-
-  if (!isVisible) return null;
+  }, []);
 
   return (
     <>
-      {/* Dynamic styles to hide the native hardware cursor when the custom one is active */}
+      {/* Hide hardware cursor when custom one is rendering on desktop viewports */}
       <style dangerouslySetInnerHTML={{__html: `
-        @media (min-width: 1024px) {
+        @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
           html, body, a, button, select, input, textarea, [role="button"], [class*="interactive"], iframe {
             cursor: none !important;
           }
         }
       `}} />
 
-      {/* High-Performance GPU Trail Canvas */}
-      <canvas
-        ref={canvasRef}
-        className="fixed inset-0 pointer-events-none z-[998] hidden lg:block"
-        style={{ mixBlendMode: "screen" }}
-      />
-
-      {/* Main Cursor Elements */}
-      <div className="hidden lg:block pointer-events-none fixed inset-0 z-[999]">
+      {/* Main Cursor Elements Container */}
+      <div className="hidden lg:block pointer-events-none fixed inset-0 z-[9999] overflow-hidden">
         {/* Primary Dot */}
         <div
           ref={dotRef}
-          className="fixed w-2 h-2 rounded-full z-[1000] mix-blend-screen transition-colors duration-200"
+          className="fixed w-2 h-2 rounded-full z-[10000] mix-blend-screen transition-colors duration-200 ease-out"
           style={{
-            backgroundColor: isHovered ? "rgb(168, 85, 247)" : "rgb(6, 182, 212)",
+            backgroundColor: "rgb(6, 182, 212)",
             transform: "translate3d(-100px, -100px, 0) translate(-50%, -50%)",
+            willChange: "transform",
+            opacity: 0,
+            transitionProperty: "background-color",
           }}
         />
-        {/* Glowing Outer Ring */}
+        {/* Thin Outer Ring */}
         <div
           ref={ringRef}
-          className="fixed border rounded-full z-[999] transition-all duration-200"
+          className="fixed w-6 h-6 border rounded-full z-[9999] transition-all duration-300 ease-out"
           style={{
-            width: isHovered ? "48px" : "24px",
-            height: isHovered ? "48px" : "24px",
-            backgroundColor: isHovered ? "rgba(168, 85, 247, 0.08)" : "rgba(255, 255, 255, 0)",
-            borderColor: isHovered ? "rgba(168, 85, 247, 0.3)" : "rgba(6, 182, 212, 0.4)",
-            transform: "translate3d(-100px, -100px, 0) translate(-50%, -50%)",
+            backgroundColor: "rgba(6, 182, 212, 0.04)",
+            borderColor: "rgba(6, 182, 212, 0.4)",
+            transform: "translate3d(-100px, -100px, 0) translate(-50%, -50%) scale(1)",
+            willChange: "transform",
+            opacity: 0,
+            transitionProperty: "background-color, border-color",
           }}
         />
       </div>
