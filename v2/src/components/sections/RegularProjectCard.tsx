@@ -141,14 +141,7 @@ export default function RegularProjectCard({ project, index }: { project: Projec
               <a href={project.github} className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 text-white text-sm font-medium transition-all group/link relative overflow-hidden">
                 <span className="absolute inset-0 bg-white/5 scale-0 group-hover/link:scale-100 rounded-xl transition-transform duration-300 origin-center" />
                 <FaGithub size={16} className="group-hover/link:rotate-12 transition-transform duration-300 relative z-10" /> 
-                <span className="relative z-10">Code</span>
-              </a>
-            </Magnetic>
-            <Magnetic className="flex-1 flex">
-              <a href={project.demo} className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-black border border-primary/20 text-sm font-medium transition-all group/link relative overflow-hidden hover:shadow-[0_0_20px_rgba(6,182,212,0.4)]">
-                <span className="absolute inset-0 bg-primary scale-0 group-hover/link:scale-100 rounded-xl transition-transform duration-300 origin-center" />
-                <ExternalLink size={16} className="relative z-10 group-hover/link:scale-110 transition-transform group-hover/link:animate-pulse" /> 
-                <span className="relative z-10">Live Demo</span>
+                <span className="relative z-10">GitHub Repository</span>
               </a>
             </Magnetic>
           </div>

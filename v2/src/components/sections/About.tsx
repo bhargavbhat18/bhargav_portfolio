@@ -87,7 +87,7 @@ export default function About() {
               <SpotlightCard className="p-4 rounded-2xl flex flex-col items-center justify-center text-center gap-2 group hover:border-primary/50 transition-colors">
                 <div className="text-primary group-hover:scale-110 transition-transform"><Users size={22} /></div>
                 <div className="text-sm font-bold font-heading text-white line-clamp-1 py-1">TEDxGCEM</div>
-                <div className="text-[10px] font-mono text-muted-foreground">Organizer & Design</div>
+                <div className="text-[10px] font-mono text-muted-foreground">Production & Design</div>
               </SpotlightCard>
 
               {/* Stat 3: CGPA */}
