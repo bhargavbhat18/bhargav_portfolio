@@ -151,7 +151,7 @@ export default function VitaGuardCard() {
   return (
     <motion.div
       ref={containerRef}
-      style={{ scale, opacity, filter: `blur(${blurValue.get()})` }}
+      style={{ scale, opacity, filter: blurValue }}
       className="mb-24 relative rounded-3xl p-1 lg:p-2 bg-gradient-to-b from-white/5 to-transparent border border-white/5 overflow-hidden"
     >
       {/* Aurora Background Effect */}
