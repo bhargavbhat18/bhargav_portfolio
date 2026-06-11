@@ -5,7 +5,6 @@ import Hero from "@/components/sections/Hero";
 import About from "@/components/sections/About";
 import TechStack from "@/components/sections/TechStack";
 import Projects from "@/components/sections/Projects";
-import GithubStats from "@/components/sections/GithubStats";
 import Experience from "@/components/sections/Experience";
 import Certifications from "@/components/sections/Certifications";
 import TEDxGCEM from "@/components/sections/TEDxGCEM";
@@ -21,7 +20,6 @@ export default function Home() {
         <About />
         <TechStack />
         <Projects />
-        <GithubStats />
         <Experience />
         <Certifications />
         <TEDxGCEM />
