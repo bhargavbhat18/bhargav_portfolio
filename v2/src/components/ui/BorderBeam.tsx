@@ -24,13 +24,11 @@ export default function BorderBeam({
       )}
       style={{
         // Excludes the content box from the border box, drawing ONLY the border
-        maskImage: "linear-gradient(#fff 0 0), linear-gradient(#fff 0 0)",
-        maskClip: "content-box, border-box",
-        maskComposite: "exclude",
-        WebkitMaskImage: "linear-gradient(#fff 0 0), linear-gradient(#fff 0 0)",
-        WebkitMaskClip: "content-box, border-box",
+        WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
         WebkitMaskComposite: "xor",
-      } as any}
+        maskImage: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+        maskComposite: "exclude",
+      }}
     >
       <div
         style={{
