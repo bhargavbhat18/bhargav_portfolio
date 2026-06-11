@@ -165,12 +165,36 @@ export default function Contact() {
                     className="flex flex-col items-center justify-center text-center py-10 h-full relative z-10"
                   >
                     <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ type: "spring", stiffness: 250, damping: 15 }}
-                      className="text-primary mb-6"
+                      initial={{ scale: 0.9, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ duration: 0.5 }}
+                      className="text-primary mb-6 flex items-center justify-center"
                     >
-                      <CheckCircle size={60} className="glow-cyan rounded-full bg-primary/10 border border-primary/20 p-1" />
+                      {/* Premium Animated SVG Checkmark */}
+                      <svg viewBox="0 0 52 52" className="w-16 h-16 text-primary drop-shadow-[0_0_15px_rgba(6,182,212,0.4)]">
+                        <motion.circle
+                          cx="26"
+                          cy="26"
+                          r="23"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="3"
+                          initial={{ pathLength: 0 }}
+                          animate={{ pathLength: 1 }}
+                          transition={{ duration: 0.6, ease: "easeOut" }}
+                        />
+                        <motion.path
+                          d="M16 27 l7 7 l14 -14"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="3.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          initial={{ pathLength: 0 }}
+                          animate={{ pathLength: 1 }}
+                          transition={{ duration: 0.5, delay: 0.5, ease: "easeOut" }}
+                        />
+                      </svg>
                     </motion.div>
                     <h4 className="text-2xl font-bold font-heading text-white mb-2">Transmission Successful</h4>
                     <p className="text-sm text-muted-foreground max-w-sm mb-8 font-light">

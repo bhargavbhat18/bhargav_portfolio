@@ -5,9 +5,11 @@ import Hero from "@/components/sections/Hero";
 import About from "@/components/sections/About";
 import TechStack from "@/components/sections/TechStack";
 import Projects from "@/components/sections/Projects";
+import GithubStats from "@/components/sections/GithubStats";
 import Experience from "@/components/sections/Experience";
 import Certifications from "@/components/sections/Certifications";
 import TEDxGCEM from "@/components/sections/TEDxGCEM";
+import TerminalSection from "@/components/sections/TerminalSection";
 import Contact from "@/components/sections/Contact";
 
 export default function Home() {
@@ -19,9 +21,11 @@ export default function Home() {
         <About />
         <TechStack />
         <Projects />
+        <GithubStats />
         <Experience />
         <Certifications />
         <TEDxGCEM />
+        <TerminalSection />
         <Contact />
       </main>
       <Footer />

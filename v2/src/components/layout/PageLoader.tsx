@@ -78,14 +78,86 @@ export default function PageLoader() {
                 className="absolute w-16 h-16 rounded-full bg-gradient-to-tr from-primary/15 to-accent/15 blur-md"
               />
 
-              <motion.span
-                initial={{ letterSpacing: "-0.1em", opacity: 0, scale: 0.8 }}
-                animate={{ letterSpacing: "0.05em", opacity: 1, scale: 1 }}
-                transition={{ duration: 1.2, ease: [0.215, 0.610, 0.355, 1.000] }}
-                className="text-3xl font-heading font-black text-white relative z-10 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]"
+              {/* Animated SVG Draw Logo Reveal */}
+              <svg 
+                viewBox="0 0 100 100" 
+                className="w-16 h-16 text-white relative z-10 drop-shadow-[0_0_15px_rgba(6,182,212,0.6)]"
               >
-                BB.
-              </motion.span>
+                {/* Left B stem */}
+                <motion.path
+                  d="M 22 22 L 22 78"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 1.0, ease: "easeInOut" }}
+                />
+                {/* Left B loops */}
+                <motion.path
+                  d="M 22 22 C 38 22, 38 48, 22 48"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 0.9, ease: "easeInOut", delay: 0.4 }}
+                />
+                <motion.path
+                  d="M 22 48 C 40 48, 40 78, 22 78"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 0.9, ease: "easeInOut", delay: 0.7 }}
+                />
+                {/* Right B stem */}
+                <motion.path
+                  d="M 50 22 L 50 78"
+                  fill="none"
+                  stroke="#A855F7"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 1.0, ease: "easeInOut", delay: 0.2 }}
+                />
+                {/* Right B loops */}
+                <motion.path
+                  d="M 50 22 C 66 22, 66 48, 50 48"
+                  fill="none"
+                  stroke="#A855F7"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 0.9, ease: "easeInOut", delay: 0.6 }}
+                />
+                <motion.path
+                  d="M 50 48 C 68 48, 68 78, 50 78"
+                  fill="none"
+                  stroke="#A855F7"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 0.9, ease: "easeInOut", delay: 0.9 }}
+                />
+                {/* Dot */}
+                <motion.circle
+                  cx="78"
+                  cy="78"
+                  r="3.5"
+                  fill="#06B6D4"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.3, delay: 1.4 }}
+                />
+              </svg>
             </div>
 
             {/* Load Information */}

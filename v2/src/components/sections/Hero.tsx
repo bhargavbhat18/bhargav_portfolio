@@ -8,6 +8,7 @@ import { SiSpringboot, SiMysql, SiJavascript } from "react-icons/si";
 import Image from "next/image";
 import Magnetic from "../ui/Magnetic";
 import BorderBeam from "../ui/BorderBeam";
+import HeroGlobe from "../ui/HeroGlobe";
 
 // --- Typewriter Component ---
 function Typewriter({ words }: { words: string[] }) {
@@ -158,6 +159,9 @@ export default function Hero() {
       id="hero" 
       className="relative min-h-screen flex items-center justify-center pt-28 pb-16 overflow-hidden"
     >
+      {/* 3D Rotating Globe Background */}
+      <HeroGlobe />
+
       {/* Background Grid Pattern moving with parallax */}
       <motion.div 
         data-testid="hero-grid"
