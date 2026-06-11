@@ -25,6 +25,13 @@ export default function CustomCursor() {
     // 1. Mouse Event Listeners
     const handleMouseMove = (e: MouseEvent) => {
       mouseRef.current = { x: e.clientX, y: e.clientY };
+      
+      // OPTIMIZATION: Update Primary Dot position instantly inside mousemove callback!
+      // This bypasses the 1-frame requestAnimationFrame scheduling delay completely.
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate(-50%, -50%)`;
+      }
+      
       if (!isVisible) setIsVisible(true);
     };
 
@@ -69,13 +76,8 @@ export default function CustomCursor() {
 
     // 3. Combined GPU Animation Loop (Direct DOM Updates)
     const tick = () => {
-      // Update Primary Dot Position Instantly
-      if (dotRef.current) {
-        dotRef.current.style.transform = `translate3d(${mouseRef.current.x}px, ${mouseRef.current.y}px, 0) translate(-50%, -50%)`;
-      }
-
       // Update Snappy Outer Ring Position (Lerp tracking)
-      const lerpFactor = 0.28; // Snappy follow multiplier
+      const lerpFactor = 0.35; // Faster snappy follow factor
       ringRefPos.current.x += (mouseRef.current.x - ringRefPos.current.x) * lerpFactor;
       ringRefPos.current.y += (mouseRef.current.y - ringRefPos.current.y) * lerpFactor;
 
@@ -166,6 +168,15 @@ export default function CustomCursor() {
 
   return (
     <>
+      {/* Dynamic styles to hide the native hardware cursor when the custom one is active */}
+      <style dangerouslySetInnerHTML={{__html: `
+        @media (min-width: 1024px) {
+          html, body, a, button, select, input, textarea, [role="button"], [class*="interactive"], iframe {
+            cursor: none !important;
+          }
+        }
+      `}} />
+
       {/* High-Performance GPU Trail Canvas */}
       <canvas
         ref={canvasRef}

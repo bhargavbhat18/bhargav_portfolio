@@ -329,7 +329,7 @@ export default function Hero() {
 
             <div className="w-full h-full rounded-full overflow-hidden relative z-10 border border-white/5 bg-[#0A0A0A]">
               <Image 
-                src="/avatar.png"
+                src="/avatar-male.png"
                 alt="Bhargav Bhat Avatar"
                 fill
                 priority
