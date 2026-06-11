@@ -28,11 +28,23 @@ export default function CustomCursor() {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReducedMotion) return;
 
+    // Dynamically inject stylesheet to hide hardware cursor only when custom cursor is active
+    const styleEl = document.createElement("style");
+    styleEl.innerHTML = `
+      html, body, a, button, select, input, textarea, [role="button"], [class*="interactive"], iframe {
+        cursor: none !important;
+      }
+    `;
+    document.head.appendChild(styleEl);
+
     const dot = dotRef.current;
     const ring = ringRef.current;
     const ripple = rippleRef.current;
     const label = labelRef.current;
-    if (!dot || !ring || !ripple || !label) return;
+    if (!dot || !ring || !ripple || !label) {
+      if (styleEl.parentNode) styleEl.parentNode.removeChild(styleEl);
+      return;
+    }
 
     // Spring physics configuration
     const spring = {
@@ -197,19 +209,14 @@ export default function CustomCursor() {
       document.removeEventListener("mouseleave", handleMouseLeaveWindow);
       document.removeEventListener("mouseenter", handleMouseEnterWindow);
       cancelAnimationFrame(animationId);
+      if (styleEl && styleEl.parentNode) {
+        styleEl.parentNode.removeChild(styleEl);
+      }
     };
   }, []);
 
   return (
     <>
-      {/* Hide native hardware cursor when custom one is active on desktop */}
-      <style dangerouslySetInnerHTML={{__html: `
-        @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
-          html, body, a, button, select, input, textarea, [role="button"], [class*="interactive"], iframe {
-            cursor: none !important;
-          }
-        }
-      `}} />
 
       {/* Main Cursor Elements Container */}
       <div className="hidden lg:block pointer-events-none fixed inset-0 z-[9999] overflow-hidden">

@@ -9,6 +9,9 @@ export default function PageLoader() {
   const [stepText, setStepText] = useState("Initializing Core Modules...");
 
   useEffect(() => {
+    // Force scroll to top on mount
+    window.scrollTo(0, 0);
+
     const steps = [
       { prg: 20, text: "Configuring environment..." },
       { prg: 45, text: "Constructing layout components..." },
@@ -21,7 +24,10 @@ export default function PageLoader() {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
-          setTimeout(() => setLoading(false), 600);
+          setTimeout(() => {
+            setLoading(false);
+            window.scrollTo(0, 0);
+          }, 600);
           return 100;
         }
 
