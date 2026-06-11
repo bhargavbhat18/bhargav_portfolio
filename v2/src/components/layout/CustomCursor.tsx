@@ -20,11 +20,8 @@ export default function CustomCursor() {
   const mouseX = useMotionValue(-100);
   const mouseY = useMotionValue(-100);
 
-  const springConfig = { stiffness: 350, damping: 25, mass: 0.2 };
-  const cursorX = useSpring(mouseX, springConfig);
-  const cursorY = useSpring(mouseY, springConfig);
-
-  const springConfigOuter = { stiffness: 200, damping: 25, mass: 0.6 };
+  // Outer ring uses a snappier spring
+  const springConfigOuter = { stiffness: 450, damping: 28, mass: 0.15 };
   const cursorXOuter = useSpring(mouseX, springConfigOuter);
   const cursorYOuter = useSpring(mouseY, springConfigOuter);
 
@@ -174,8 +171,8 @@ export default function CustomCursor() {
         <motion.div
           className="fixed w-2 h-2 bg-primary rounded-full z-[1000] mix-blend-screen -translate-x-1/2 -translate-y-1/2"
           style={{
-            x: cursorX,
-            y: cursorY,
+            x: mouseX,
+            y: mouseY,
           }}
           animate={{
             scale: isHovered ? 2.2 : 1,
