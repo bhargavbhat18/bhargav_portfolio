@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
 
 interface TrailPoint {
   x: number;
@@ -13,23 +12,18 @@ interface TrailPoint {
 export default function CustomCursor() {
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const dotRef = useRef<HTMLDivElement>(null);
+  const ringRef = useRef<HTMLDivElement>(null);
+
   const pointsRef = useRef<TrailPoint[]>([]);
-  const mouseRef = useRef({ x: 0, y: 0 });
-
-  const mouseX = useMotionValue(-100);
-  const mouseY = useMotionValue(-100);
-
-  // Outer ring uses a snappier spring
-  const springConfigOuter = { stiffness: 450, damping: 28, mass: 0.15 };
-  const cursorXOuter = useSpring(mouseX, springConfigOuter);
-  const cursorYOuter = useSpring(mouseY, springConfigOuter);
+  const mouseRef = useRef({ x: -100, y: -100 });
+  const ringRefPos = useRef({ x: -100, y: -100 });
 
   useEffect(() => {
     // 1. Mouse Event Listeners
     const handleMouseMove = (e: MouseEvent) => {
-      mouseX.set(e.clientX);
-      mouseY.set(e.clientY);
       mouseRef.current = { x: e.clientX, y: e.clientY };
       if (!isVisible) setIsVisible(true);
     };
@@ -58,7 +52,7 @@ export default function CustomCursor() {
     window.addEventListener("mouseover", handleMouseOver);
     document.addEventListener("mouseleave", handleMouseLeaveWindow);
 
-    // 2. Canvas Setup and Loop
+    // 2. Canvas Setup
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -73,11 +67,27 @@ export default function CustomCursor() {
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
-    const animateTrail = () => {
+    // 3. Combined GPU Animation Loop (Direct DOM Updates)
+    const tick = () => {
+      // Update Primary Dot Position Instantly
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate3d(${mouseRef.current.x}px, ${mouseRef.current.y}px, 0) translate(-50%, -50%)`;
+      }
+
+      // Update Snappy Outer Ring Position (Lerp tracking)
+      const lerpFactor = 0.28; // Snappy follow multiplier
+      ringRefPos.current.x += (mouseRef.current.x - ringRefPos.current.x) * lerpFactor;
+      ringRefPos.current.y += (mouseRef.current.y - ringRefPos.current.y) * lerpFactor;
+
+      if (ringRef.current) {
+        ringRef.current.style.transform = `translate3d(${ringRefPos.current.x}px, ${ringRefPos.current.y}px, 0) translate(-50%, -50%)`;
+      }
+
+      // Canvas Trail drawing
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Add new point based on current mouse position
       if (isVisible) {
+        // Add new point based on current mouse position
         pointsRef.current.push({
           x: mouseRef.current.x,
           y: mouseRef.current.y,
@@ -129,10 +139,6 @@ export default function CustomCursor() {
           ctx.quadraticCurveTo(pointsRef.current[i - 1].x, pointsRef.current[i - 1].y, xc, yc);
         }
         
-        const pathGradient = ctx.createLinearGradient(
-          pointsRef.current[0].x, pointsRef.current[0].y, 
-          pointsRef.current[pointsRef.current.length - 1].x, pointsRef.current[pointsRef.current.length - 1].y
-        );
         const strokeColor = isHovered ? "rgba(168, 85, 247, 0.15)" : "rgba(6, 182, 212, 0.15)";
         ctx.strokeStyle = strokeColor;
         ctx.lineWidth = isHovered ? 4 : 2;
@@ -142,10 +148,10 @@ export default function CustomCursor() {
         ctx.shadowBlur = 0; // Reset
       }
 
-      animationId = requestAnimationFrame(animateTrail);
+      animationId = requestAnimationFrame(tick);
     };
 
-    animateTrail();
+    animationId = requestAnimationFrame(tick);
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
@@ -154,7 +160,9 @@ export default function CustomCursor() {
       window.removeEventListener("resize", resizeCanvas);
       cancelAnimationFrame(animationId);
     };
-  }, [isVisible, isHovered, mouseX, mouseY]);
+  }, [isVisible, isHovered]);
+
+  if (!isVisible) return null;
 
   return (
     <>
@@ -168,32 +176,25 @@ export default function CustomCursor() {
       {/* Main Cursor Elements */}
       <div className="hidden lg:block pointer-events-none fixed inset-0 z-[999]">
         {/* Primary Dot */}
-        <motion.div
-          className="fixed w-2 h-2 bg-primary rounded-full z-[1000] mix-blend-screen -translate-x-1/2 -translate-y-1/2"
+        <div
+          ref={dotRef}
+          className="fixed w-2 h-2 rounded-full z-[1000] mix-blend-screen transition-colors duration-200"
           style={{
-            x: mouseX,
-            y: mouseY,
+            backgroundColor: isHovered ? "rgb(168, 85, 247)" : "rgb(6, 182, 212)",
+            transform: "translate3d(-100px, -100px, 0) translate(-50%, -50%)",
           }}
-          animate={{
-            scale: isHovered ? 2.2 : 1,
-            backgroundColor: isHovered ? "rgb(168, 85, 247)" : "rgb(6, 182, 212)"
-          }}
-          transition={{ type: "spring", stiffness: 300, damping: 20 }}
         />
         {/* Glowing Outer Ring */}
-        <motion.div
-          className="fixed w-6 h-6 border border-accent/40 rounded-full z-[999] -translate-x-1/2 -translate-y-1/2"
+        <div
+          ref={ringRef}
+          className="fixed border rounded-full z-[999] transition-all duration-200"
           style={{
-            x: cursorXOuter,
-            y: cursorYOuter,
-          }}
-          animate={{
-            width: isHovered ? 48 : 24,
-            height: isHovered ? 48 : 24,
+            width: isHovered ? "48px" : "24px",
+            height: isHovered ? "48px" : "24px",
             backgroundColor: isHovered ? "rgba(168, 85, 247, 0.08)" : "rgba(255, 255, 255, 0)",
-            borderColor: isHovered ? "rgba(168, 85, 247, 0.3)" : "rgba(6, 182, 212, 0.4)"
+            borderColor: isHovered ? "rgba(168, 85, 247, 0.3)" : "rgba(6, 182, 212, 0.4)",
+            transform: "translate3d(-100px, -100px, 0) translate(-50%, -50%)",
           }}
-          transition={{ type: "spring", stiffness: 200, damping: 25 }}
         />
       </div>
     </>
