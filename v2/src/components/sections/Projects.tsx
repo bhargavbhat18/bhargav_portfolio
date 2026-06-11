@@ -2,13 +2,14 @@
 
 import VitaGuardCard from "./VitaGuardCard";
 import RegularProjectCard from "./RegularProjectCard";
+import { motion } from "framer-motion";
 
 export default function Projects() {
   const projects = [
     {
       title: "E-Commerce Web Application",
       category: "Full Stack",
-      description: "Designed and developed a full-stack e-commerce platform with secure authentication, product catalog management, order tracking, and scalable backend architecture.",
+      description: "Designed and developed a full-stack e-commerce platform featuring secure user authentication, catalog queries, transaction logging, and a highly responsive checkout workflow.",
       tech: ["Java", "Spring Boot", "REST APIs", "MySQL"],
       github: "https://github.com/bhargavbhat18/E-Commerce-Web-Application",
       demo: "#",
@@ -17,7 +18,7 @@ export default function Projects() {
     {
       title: "Theater Seat Booking System",
       category: "Backend & Systems",
-      description: "Developed a real-time seat booking platform that handles seat reservations, booking workflows, and payment integration while preventing double bookings.",
+      description: "Developed a backend seat allocation platform that processes seat locks, scheduling grids, and concurrent payment webhooks while preventing race conditions.",
       tech: ["Java", "Spring Boot", "MySQL", "REST APIs"],
       github: "https://github.com/bhargavbhat18/Theater-Seat-Booking-System/tree/main/Book-My-Show-master",
       demo: "#",
@@ -27,6 +28,10 @@ export default function Projects() {
 
   return (
     <section id="projects" className="py-32 relative">
+      {/* Background radial spotlights */}
+      <div className="absolute top-[30%] left-[20%] w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[20%] right-[10%] w-[400px] h-[400px] bg-accent/5 rounded-full blur-[100px] pointer-events-none" />
+
       <div className="max-w-7xl mx-auto px-6">
         
         <div className="mb-16">
@@ -34,13 +39,21 @@ export default function Projects() {
           <h3 className="text-4xl font-heading font-bold">Projects</h3>
         </div>
 
-        <VitaGuardCard />
+        {/* Bento Grid Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          {/* Flagship Project - Spans 8 Columns */}
+          <div className="lg:col-span-8 flex">
+            <VitaGuardCard />
+          </div>
 
-        {/* Regular Projects Grid */}
-        <div className="grid lg:grid-cols-2 gap-8">
-          {projects.map((project, idx) => (
-            <RegularProjectCard key={project.title} project={project} index={idx} />
-          ))}
+          {/* Secondary Projects - Spans 4 Columns Stacked */}
+          <div className="lg:col-span-4 flex flex-col gap-8 justify-between">
+            {projects.map((project, idx) => (
+              <div key={project.title} className="flex-1 flex">
+                <RegularProjectCard project={project} index={idx} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

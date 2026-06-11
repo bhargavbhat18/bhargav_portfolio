@@ -3,6 +3,7 @@ import { Inter, Sora, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import PageLoader from "@/components/layout/PageLoader";
 import ScrollProgress from "@/components/layout/ScrollProgress";
+import BackgroundEffects from "@/components/layout/BackgroundEffects";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -42,8 +43,7 @@ export default function RootLayout({
         <ScrollProgress />
 
         {/* Global Background Effects */}
-        <div className="fixed inset-0 aurora-container opacity-30 pointer-events-none z-0" />
-        <div className="fixed inset-0 noise-overlay pointer-events-none z-[1]" />
+        <BackgroundEffects />
 
         <div className="relative z-10 flex-1 flex flex-col">
           {children}
