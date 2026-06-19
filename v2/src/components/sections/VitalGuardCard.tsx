@@ -28,7 +28,7 @@ function CounterNumber({ value, suffix = "" }: { value: number; suffix?: string 
   return <motion.span ref={ref} className="font-heading font-bold">{rounded}</motion.span>;
 }
 
-export default function VitaGuardCard() {
+export default function VitalGuardCard() {
   const containerRef = useRef<HTMLDivElement>(null);
   
   // Scroll Parallax entry
@@ -40,7 +40,7 @@ export default function VitaGuardCard() {
   const scale = useTransform(scrollYProgress, [0, 0.4], [0.97, 1]);
   const opacity = useTransform(scrollYProgress, [0, 0.3], [0.7, 1]);
 
-  const vitaTech = ["Java", "Spring Boot", "Python", "REST APIs", "MySQL", "Android", "Firebase", "Git"];
+  const vitalTech = ["Java", "Spring Boot", "Python", "REST APIs", "MySQL", "Android", "Firebase", "Git"];
   
   const currentFeatures = [
     "Secure JWT Authentication",
@@ -85,7 +85,7 @@ export default function VitaGuardCard() {
               {/* Title */}
               <h3 className="text-4xl lg:text-5xl font-heading font-black mb-4 select-none tracking-tight">
                 <span className="text-gradient text-shine-active drop-shadow-[0_0_15px_rgba(6,182,212,0.2)]">
-                  VitaGuard
+                  VitalGuard
                 </span>
               </h3>
               
@@ -127,7 +127,7 @@ export default function VitaGuardCard() {
             <div className="pt-4 border-t border-white/10 mt-auto">
               <Magnetic className="w-full flex">
                 <a
-                  href="https://github.com/bhargavbhat18/VitaGuard"
+                  href="https://github.com/bhargavbhat18/Vital-Guard"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full group flex items-center justify-center gap-2.5 px-6 py-3 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-semibold transition-all duration-300 border border-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.06)] relative overflow-hidden"
@@ -157,11 +157,11 @@ export default function VitaGuardCard() {
                       <Activity size={12} className="text-primary" /> Tech Chips
                     </h4>
                     <span className="text-[10px] font-mono text-cyan-400 bg-cyan-500/10 px-1.5 py-0.5 rounded">
-                      <CounterNumber value={vitaTech.length} /> Total
+                      <CounterNumber value={vitalTech.length} /> Total
                     </span>
                   </div>
                   <div className="flex flex-wrap gap-1.5">
-                    {vitaTech.map((tech) => (
+                    {vitalTech.map((tech) => (
                       <div
                         key={tech}
                         className="text-[9px] font-mono px-2 py-0.5 rounded-md bg-white/[0.02] border border-white/10 text-white/70 hover:border-primary/50 hover:text-white transition-colors cursor-default"

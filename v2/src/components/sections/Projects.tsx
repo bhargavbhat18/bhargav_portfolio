@@ -1,6 +1,6 @@
 "use client";
 
-import VitaGuardCard from "./VitaGuardCard";
+import VitalGuardCard from "./VitalGuardCard";
 import RegularProjectCard from "./RegularProjectCard";
 import { motion } from "framer-motion";
 
@@ -43,7 +43,7 @@ export default function Projects() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           {/* Flagship Project - Spans 8 Columns */}
           <div className="lg:col-span-8 flex">
-            <VitaGuardCard />
+            <VitalGuardCard />
           </div>
 
           {/* Secondary Projects - Spans 4 Columns Stacked */}
