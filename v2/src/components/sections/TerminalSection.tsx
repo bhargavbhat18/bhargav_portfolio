@@ -177,7 +177,7 @@ export default function TerminalSection() {
 
       <div className="max-w-4xl mx-auto px-6 relative z-10">
         <div className="mb-12">
-          <h2 className="text-sm font-mono text-primary uppercase tracking-widest mb-2">07. Interactive Console</h2>
+          <h2 className="text-sm font-mono text-primary uppercase tracking-widest mb-2">Interactive Console</h2>
           <h3 className="text-4xl font-heading font-bold">Terminal Mode</h3>
           <p className="text-muted-foreground mt-3 text-sm font-light max-w-lg leading-relaxed">
             Prefer a command-line interface? Tap anywhere inside the terminal to boot up a session and query my portfolio metrics directly.

@@ -57,7 +57,7 @@ export default function Experience() {
       <div className="max-w-4xl mx-auto px-6">
         
         <div className="mb-20">
-          <h2 className="text-sm font-mono text-primary uppercase tracking-widest mb-2">04. My Journey</h2>
+          <h2 className="text-sm font-mono text-primary uppercase tracking-widest mb-2">My Journey</h2>
           <h3 className="text-4xl font-heading font-bold">Experience</h3>
         </div>
 

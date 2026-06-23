@@ -8,39 +8,6 @@ import { Sparkles, Terminal } from "lucide-react";
 import SpotlightCard from "../ui/SpotlightCard";
 import BorderBeam from "../ui/BorderBeam";
 
-// --- Skill Meter Component ---
-function SkillMeter({ name, percent }: { name: string; percent: number }) {
-  const barRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(barRef, { once: true, margin: "-50px" });
-  
-  // Spring animate the progress bar width
-  const motionVal = useMotionValue(0);
-  const smoothVal = useSpring(motionVal, { stiffness: 60, damping: 15 });
-  const widthStr = useTransform(smoothVal, (v) => `${v}%`);
-
-  useEffect(() => {
-    if (inView) {
-      motionVal.set(percent);
-    }
-  }, [inView, percent, motionVal]);
-
-  return (
-    <div className="space-y-1.5 w-full py-2 group/meter">
-      <div className="flex justify-between text-xs font-mono">
-        <span className="text-white/70 group-hover/meter:text-primary transition-colors">{name}</span>
-      </div>
-      <div ref={barRef} className="h-[3px] w-full bg-white/5 rounded-full overflow-hidden relative border border-white/5 shadow-inner">
-        <motion.div
-          style={{ width: widthStr }}
-          className="h-full bg-gradient-to-r from-primary to-accent rounded-full relative"
-        >
-          <div className="absolute inset-0 bg-white/10" style={{ animation: "shimmer 2s infinite linear" }} />
-        </motion.div>
-      </div>
-    </div>
-  );
-}
-
 export default function TechStack() {
   const row1 = [
     { name: "Java", icon: <FaJava /> },
@@ -67,47 +34,47 @@ export default function TechStack() {
     {
       title: "Programming Languages",
       icon: <FaCode className="text-primary" />,
-      skills: [
-        { name: "Java", percent: 90 },
-        { name: "Python", percent: 80 },
-        { name: "JavaScript", percent: 80 },
-        { name: "SQL", percent: 85 }
-      ],
+      colorClass: "text-primary",
+      borderColor: "hover:border-primary/30",
+      dotColor: "bg-primary",
+      hoverTextColor: "hover:text-primary",
+      skills: ["Java", "Python", "JavaScript", "SQL"],
     },
     {
       title: "Frameworks & APIs",
-      icon: <SiSpringboot className="text-green-500" />,
-      skills: [
-        { name: "Spring Boot", percent: 85 },
-        { name: "REST APIs", percent: 90 },
-        { name: "React.js", percent: 80 }
-      ],
+      icon: <SiSpringboot className="text-emerald-400" />,
+      colorClass: "text-emerald-400",
+      borderColor: "hover:border-emerald-500/30",
+      dotColor: "bg-emerald-400",
+      hoverTextColor: "hover:text-emerald-400",
+      skills: ["Spring Boot", "REST APIs", "React.js"],
     },
     {
       title: "Databases & Storage",
       icon: <SiMysql className="text-accent" />,
-      skills: [
-        { name: "MySQL", percent: 85 }
-      ],
+      colorClass: "text-accent",
+      borderColor: "hover:border-accent/30",
+      dotColor: "bg-accent",
+      hoverTextColor: "hover:text-accent",
+      skills: ["MySQL"],
     },
     {
       title: "Developer Tools",
-      icon: <SiIntellijidea className="text-primary" />,
-      skills: [
-        { name: "Git & GitHub", percent: 85 },
-        { name: "VS Code", percent: 90 },
-        { name: "IntelliJ IDEA", percent: 90 },
-        { name: "Android Studio", percent: 80 }
-      ],
+      icon: <SiIntellijidea className="text-blue-400" />,
+      colorClass: "text-blue-400",
+      borderColor: "hover:border-blue-500/30",
+      dotColor: "bg-blue-400",
+      hoverTextColor: "hover:text-blue-400",
+      skills: ["Git & GitHub", "VS Code", "IntelliJ IDEA", "Android Studio"],
     },
     {
       title: "AI Integrations",
-      icon: <Sparkles className="text-accent" />,
-      skills: [
-        { name: "Google Gemini", percent: 95 },
-        { name: "Claude API", percent: 90 },
-        { name: "GitHub Copilot", percent: 90 }
-      ],
+      icon: <Sparkles className="text-pink-400" />,
+      colorClass: "text-pink-400",
+      borderColor: "hover:border-pink-500/30",
+      dotColor: "bg-pink-400",
+      hoverTextColor: "hover:text-pink-400",
+      skills: ["Google Gemini", "Claude API", "GitHub Copilot"],
     },
   ];
 
@@ -116,7 +83,7 @@ export default function TechStack() {
       <div className="max-w-7xl mx-auto px-6">
         
         <div className="mb-16">
-          <h2 className="text-sm font-mono text-accent uppercase tracking-widest mb-2">02. My Arsenal</h2>
+          <h2 className="text-sm font-mono text-accent uppercase tracking-widest mb-2">My Arsenal</h2>
           <h3 className="text-4xl font-heading font-bold">Tech Stack</h3>
         </div>
 
@@ -165,7 +132,7 @@ export default function TechStack() {
           </div>
         </div>
 
-        {/* Structured Skill Cards containing Skill Meters */}
+        {/* Structured Skill Cards containing Skill Badges instead of meters */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {categories.map((category, idx) => (
             <motion.div
@@ -187,9 +154,20 @@ export default function TechStack() {
                     <span>{category.title}</span>
                   </h4>
                   
-                  <div className="space-y-4">
-                    {category.skills.map((skill) => (
-                      <SkillMeter key={skill.name} name={skill.name} percent={skill.percent} />
+                  <div className="flex flex-wrap gap-2.5">
+                    {category.skills.map((skill, sIdx) => (
+                      <motion.div
+                        key={skill}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: (idx * 0.1) + (sIdx * 0.05) }}
+                        whileHover={{ scale: 1.05, y: -2 }}
+                        className={`px-3.5 py-2 rounded-xl bg-white/[0.02] border border-white/5 ${category.borderColor} text-white/80 ${category.hoverTextColor} text-xs font-mono transition-all duration-300 flex items-center gap-2 cursor-default`}
+                      >
+                        <span className={`w-1.5 h-1.5 rounded-full ${category.dotColor}`} />
+                        <span>{skill}</span>
+                      </motion.div>
                     ))}
                   </div>
                 </div>

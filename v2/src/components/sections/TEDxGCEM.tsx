@@ -40,7 +40,7 @@ export default function TEDxGCEM() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-sm font-mono text-red-500 uppercase tracking-widest mb-2">07. Special Showcase</h2>
+            <h2 className="text-sm font-mono text-red-500 uppercase tracking-widest mb-2">Special Showcase</h2>
             <h3 className="text-4xl font-heading font-bold mb-6">Orchestrating Ideas Worth Spreading</h3>
             <p className="text-muted-foreground leading-relaxed mb-8">
               Being a Production Team Member for TEDxGCEM 2025 gave me the opportunity to coordinate stage operations, technical equipment management, and media logistics to ensure smooth event execution.

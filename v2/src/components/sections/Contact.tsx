@@ -11,20 +11,40 @@ export default function Contact() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
-  const [status, setStatus] = useState<"idle" | "sending" | "success">("idle");
+  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !email || !message) return;
     
     setStatus("sending");
-    // Simulate form submission
-    setTimeout(() => {
+    setErrorMessage("");
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, message }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to send message.");
+      }
+
       setStatus("success");
       setName("");
       setEmail("");
       setMessage("");
-    }, 1800);
+    } catch (err: any) {
+      console.error("Submission error:", err);
+      setStatus("error");
+      setErrorMessage(err.message || "An unexpected error occurred. Please try again.");
+    }
   };
 
   return (
@@ -36,7 +56,7 @@ export default function Contact() {
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         
         <div className="mb-20 text-center">
-          <h2 className="text-sm font-mono text-primary uppercase tracking-widest mb-2">08. What's Next?</h2>
+          <h2 className="text-sm font-mono text-primary uppercase tracking-widest mb-2">What's Next?</h2>
           <h3 className="text-4xl font-heading font-bold">Get In Touch</h3>
           <p className="text-muted-foreground mt-4 max-w-xl mx-auto font-light leading-relaxed">
             I'm currently seeking internships or new opportunities. If you have an inquiry, a project proposal, or just want to connect, feel free to drop a message!
@@ -56,7 +76,7 @@ export default function Contact() {
             {[
               { icon: <Mail size={20} />, title: "Email Address", value: "bhargavbhathosmane321@gmail.com", href: "mailto:bhargavbhathosmane321@gmail.com", hoverClass: "hover:border-primary/40" },
               { icon: <Phone size={20} />, title: "Phone Line", value: "+91 8073897451", href: "tel:+918073897451", hoverClass: "hover:border-accent/40" },
-              { icon: <MapPin size={20} />, title: "Current Office", value: "Bengaluru, India", href: null, hoverClass: "hover:border-primary/40" }
+              { icon: <MapPin size={20} />, title: "Current Location", value: "Bengaluru, India", href: null, hoverClass: "hover:border-primary/40" }
             ].map((item, i) => (
               <SpotlightCard key={i} className={`p-6 flex items-center gap-5 group border-white/5 transition-colors ${item.hoverClass}`}>
                 <div className="w-12 h-12 rounded-2xl bg-white/[0.02] border border-white/5 flex items-center justify-center text-primary group-hover:scale-110 group-hover:text-accent transition-all duration-300">
@@ -155,6 +175,12 @@ export default function Contact() {
                         )}
                       </button>
                     </Magnetic>
+
+                    {status === "error" && (
+                      <p className="text-xs text-red-500 font-mono text-center mt-4 bg-red-500/10 border border-red-500/20 py-2.5 px-4 rounded-xl animate-pulse">
+                        Error: {errorMessage}
+                      </p>
+                    )}
                   </motion.form>
                 ) : (
                   <motion.div

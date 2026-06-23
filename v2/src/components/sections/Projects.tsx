@@ -35,7 +35,7 @@ export default function Projects() {
       <div className="max-w-7xl mx-auto px-6">
         
         <div className="mb-16">
-          <h2 className="text-sm font-mono text-primary uppercase tracking-widest mb-2">03. Featured Work</h2>
+          <h2 className="text-sm font-mono text-primary uppercase tracking-widest mb-2">Featured Work</h2>
           <h3 className="text-4xl font-heading font-bold">Projects</h3>
         </div>
 
