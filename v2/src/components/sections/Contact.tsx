@@ -13,6 +13,7 @@ export default function Contact() {
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isDemoMode, setIsDemoMode] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,6 +37,7 @@ export default function Contact() {
         throw new Error(data.error || "Failed to send message.");
       }
 
+      setIsDemoMode(data.isDemoMode || false);
       setStatus("success");
       setName("");
       setEmail("");
@@ -222,9 +224,13 @@ export default function Contact() {
                         />
                       </svg>
                     </motion.div>
-                    <h4 className="text-2xl font-bold font-heading text-white mb-2">Transmission Successful</h4>
+                    <h4 className="text-2xl font-bold font-heading text-white mb-2">
+                      {isDemoMode ? "Transmission Logged (Demo Mode)" : "Transmission Successful"}
+                    </h4>
                     <p className="text-sm text-muted-foreground max-w-sm mb-8 font-light">
-                      Thanks for reaching out! I've received your packet and will return a response shortly.
+                      {isDemoMode 
+                        ? "Your message was printed to the server console. To enable actual email delivery, please configure a valid RESEND_API_KEY in your .env.local file."
+                        : "Thanks for reaching out! I've received your packet and will return a response shortly."}
                     </p>
                     <Magnetic>
                       <button
