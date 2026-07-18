@@ -1,11 +1,20 @@
 "use client";
 
-import VitalGuardCard from "./VitalGuardCard";
 import RegularProjectCard from "./RegularProjectCard";
 import { motion } from "framer-motion";
 
 export default function Projects() {
   const projects = [
+    {
+      title: "VitalGuard",
+      category: "Healthcare System",
+      description: "A high-security, distributed healthcare environment connecting medical personnel and patients. Engineered to resolve clinical communication lags and secure health records.",
+      tech: ["Java", "Spring Boot", "MySQL", "Android"],
+      github: "https://github.com/bhargavbhat18/Vital-Guard",
+      demo: "#",
+      gradient: "from-primary/20 to-accent/20",
+      status: "Active Build",
+    },
     {
       title: "E-Commerce Web Application",
       category: "Full Stack",
@@ -14,6 +23,7 @@ export default function Projects() {
       github: "https://github.com/bhargavbhat18/E-Commerce-Web-Application",
       demo: "#",
       gradient: "from-cyan-500/20 to-blue-500/20",
+      status: "Completed",
     },
     {
       title: "Theater Seat Booking System",
@@ -23,6 +33,17 @@ export default function Projects() {
       github: "https://github.com/bhargavbhat18/Theater-Seat-Booking-System/tree/main/Book-My-Show-master",
       demo: "#",
       gradient: "from-purple-500/20 to-pink-500/20",
+      status: "Completed",
+    },
+    {
+      title: "Spring AI Chatbot",
+      category: "AI & Backend",
+      description: "An intelligent chatbot powered by Spring AI, integrating advanced natural language processing capabilities with robust Spring Boot backend architecture.",
+      tech: ["Java", "Spring Boot", "Spring AI", "LLMs"],
+      github: "https://github.com/bhargavbhat18/spring-ai-chatbot",
+      demo: "#",
+      gradient: "from-green-500/20 to-emerald-500/20",
+      status: "Developing",
     }
   ];
 
@@ -39,21 +60,13 @@ export default function Projects() {
           <h3 className="text-4xl font-heading font-bold">Projects</h3>
         </div>
 
-        {/* Bento Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-          {/* Flagship Project - Spans 8 Columns */}
-          <div className="lg:col-span-8 flex">
-            <VitalGuardCard />
-          </div>
-
-          {/* Secondary Projects - Spans 4 Columns Stacked */}
-          <div className="lg:col-span-4 flex flex-col gap-8 justify-between">
-            {projects.map((project, idx) => (
-              <div key={project.title} className="flex-1 flex">
-                <RegularProjectCard project={project} index={idx} />
-              </div>
-            ))}
-          </div>
+        {/* Regular Grid Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+          {projects.map((project, idx) => (
+            <div key={project.title} className="flex">
+              <RegularProjectCard project={project} index={idx} />
+            </div>
+          ))}
         </div>
       </div>
     </section>

@@ -15,6 +15,7 @@ interface Project {
   github: string;
   demo: string;
   gradient: string;
+  status?: string;
 }
 
 export default function RegularProjectCard({ project, index }: { project: Project; index: number }) {
@@ -114,7 +115,18 @@ export default function RegularProjectCard({ project, index }: { project: Projec
         {/* content */}
         <div className="p-6 flex flex-col flex-1 justify-between">
           <div>
-            <span className="text-[9px] font-mono text-accent uppercase tracking-widest mb-1.5 block">{project.category}</span>
+            <div className="flex justify-between items-start mb-1.5 gap-2">
+              <span className="text-[9px] font-mono text-accent uppercase tracking-widest">{project.category}</span>
+              {project.status && (
+                <span className={`text-[8px] font-mono px-1.5 py-0.5 rounded-full uppercase tracking-widest whitespace-nowrap ${
+                  project.status === "Completed" 
+                    ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" 
+                    : "bg-primary/10 text-primary border border-primary/20 animate-pulse"
+                }`}>
+                  {project.status}
+                </span>
+              )}
+            </div>
             
             {/* Title character bounce animation */}
             <h4 className="text-lg font-bold text-white mb-3 flex flex-wrap cursor-default tracking-tight">
