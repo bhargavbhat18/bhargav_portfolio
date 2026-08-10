@@ -208,7 +208,7 @@ export default function TerminalSection() {
           </div>
 
           {/* Terminal Screen Body */}
-          <div className="p-6 h-[320px] overflow-y-auto font-mono text-xs text-white/85 flex flex-col gap-2.5 scrollbar-thin scrollbar-thumb-white/5 pr-4">
+          <div className="p-4 sm:p-6 h-[320px] overflow-y-auto font-mono text-xs text-white/85 flex flex-col gap-2.5 scrollbar-thin scrollbar-thumb-white/5 pr-4">
             
             {/* Command Log output */}
             <div className="flex flex-col gap-1.5">
@@ -228,7 +228,8 @@ export default function TerminalSection() {
 
             {/* Prompt input field */}
             <div className="flex items-center relative mt-1 select-none">
-              <span className="text-emerald-400 font-bold mr-2 whitespace-nowrap">visitor@bhargav-portfolio:~$</span>
+              <span className="text-emerald-400 font-bold mr-2 whitespace-nowrap hidden sm:inline">visitor@bhargav-portfolio:~$</span>
+              <span className="text-emerald-400 font-bold mr-2 whitespace-nowrap inline sm:hidden">visitor:~$</span>
               
               <div className="flex-1 flex items-center relative h-5">
                 {/* Visual rendering of typed text and grey text autocompletion */}

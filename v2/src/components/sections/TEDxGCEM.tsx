@@ -25,7 +25,7 @@ export default function TEDxGCEM() {
             className="relative"
           >
             <div className="glass-card p-2 rounded-[2.5rem] rotate-[-2deg] border-red-500/20 hover:rotate-0 transition-transform duration-500">
-              <div className="bg-[#111] rounded-[2rem] p-12 text-center border border-white/5 relative overflow-hidden">
+              <div className="bg-[#111] rounded-[2rem] p-6 sm:p-12 text-center border border-white/5 relative overflow-hidden">
                 <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,0,0,0.05)_50%,transparent_75%)] bg-[length:250%_250%] animate-pulse" />
                 <h3 className="text-5xl font-black tracking-tighter text-white mb-2 relative z-10">
                   <span className="text-red-600">TEDx</span>GCEM

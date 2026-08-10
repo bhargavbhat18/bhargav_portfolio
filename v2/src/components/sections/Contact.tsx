@@ -87,11 +87,11 @@ export default function Contact() {
                 <div>
                   <h4 className="text-xs font-bold text-white/50 uppercase font-mono tracking-wider mb-1">{item.title}</h4>
                   {item.href ? (
-                    <a href={item.href} className="text-sm font-semibold text-white hover:text-primary transition-colors">
+                    <a href={item.href} className="text-xs sm:text-sm font-semibold text-white hover:text-primary transition-colors break-all">
                       {item.value}
                     </a>
                   ) : (
-                    <span className="text-sm font-semibold text-white">{item.value}</span>
+                    <span className="text-xs sm:text-sm font-semibold text-white break-all">{item.value}</span>
                   )}
                 </div>
               </SpotlightCard>
@@ -106,7 +106,7 @@ export default function Contact() {
             transition={{ duration: 0.6 }}
             className="lg:col-span-3 h-full flex"
           >
-            <div className="glass-card p-8 rounded-3xl border border-white/10 relative overflow-hidden flex-1 flex flex-col justify-center">
+            <div className="glass-card p-6 sm:p-8 rounded-3xl border border-white/10 relative overflow-hidden flex-1 flex flex-col justify-center">
               {/* Border beam reveal */}
               <BorderBeam duration={10} colorFrom="#A855F7" colorTo="#06B6D4" />
 

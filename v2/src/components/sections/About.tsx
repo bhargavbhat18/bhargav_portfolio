@@ -58,7 +58,7 @@ export default function About() {
           {/* Symmetrical Grid: Education & Career Goals */}
           <motion.div variants={itemVariants} className="grid md:grid-cols-2 gap-8 items-stretch">
             {/* Education Card */}
-            <SpotlightCard className="p-8 h-full flex flex-col justify-between relative overflow-hidden group border-white/5 hover:border-primary/30 w-full">
+            <SpotlightCard className="p-6 sm:p-8 h-full flex flex-col justify-between relative overflow-hidden group border-white/5 hover:border-primary/30 w-full">
               <BorderBeam duration={9} colorFrom="var(--primary)" colorTo="transparent" />
               <div className="absolute top-0 right-0 w-36 h-36 bg-primary/5 rounded-full blur-[40px] pointer-events-none" />
               
@@ -85,7 +85,7 @@ export default function About() {
             </SpotlightCard>
 
             {/* Career Goals Card */}
-            <SpotlightCard className="p-8 h-full flex flex-col justify-between relative overflow-hidden group border-white/5 hover:border-accent/30 w-full">
+            <SpotlightCard className="p-6 sm:p-8 h-full flex flex-col justify-between relative overflow-hidden group border-white/5 hover:border-accent/30 w-full">
               <BorderBeam duration={9} colorFrom="#A855F7" colorTo="#06B6D4" />
               <div className="absolute top-0 right-0 w-36 h-36 bg-accent/5 rounded-full blur-[40px] pointer-events-none" />
 

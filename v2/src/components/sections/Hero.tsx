@@ -177,7 +177,7 @@ export default function Hero() {
       <div className="max-w-7xl mx-auto px-6 w-full grid lg:grid-cols-2 gap-16 items-center relative z-10">
         
         {/* Left Content */}
-        <div className="flex flex-col gap-6 text-left">
+        <div className="flex flex-col gap-6 text-center lg:text-left items-center lg:items-start">
           {/* Status Badge */}
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
@@ -197,7 +197,7 @@ export default function Hero() {
             animate="visible"
             className="text-5xl sm:text-6xl lg:text-7xl font-bold font-heading leading-tight tracking-tighter text-white"
           >
-            <div className="overflow-hidden flex flex-wrap gap-x-3">
+            <div className="overflow-hidden flex flex-wrap justify-center lg:justify-start gap-x-3">
               {headlineWords.slice(0, 3).map((word, idx) => (
                 <span key={idx} className="block overflow-hidden py-1">
                   <motion.span variants={wordVariants} className="inline-block">
@@ -206,7 +206,7 @@ export default function Hero() {
                 </span>
               ))}
             </div>
-            <div className="overflow-hidden flex flex-wrap gap-x-3">
+            <div className="overflow-hidden flex flex-wrap justify-center lg:justify-start gap-x-3">
               {headlineWords.slice(3).map((word, idx) => (
                 <span key={idx} className="block overflow-hidden py-1">
                   <motion.span variants={wordVariants} className="inline-block text-gradient text-shine-active">
@@ -224,7 +224,7 @@ export default function Hero() {
             className="space-y-4"
           >
             {/* Dynamic typed description */}
-            <div className="text-xl font-heading text-white/80 font-semibold h-8">
+            <div className="text-xl font-heading text-white/80 font-semibold min-h-[2rem]">
               <span>I specialize in </span>
               <span className="text-primary font-bold">
                 <Typewriter words={["Java Backend Architectures", "Spring Boot Scalability", "React UI Development", "AI Agent Integrations"]} />
@@ -241,7 +241,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
-            className="flex flex-wrap items-center gap-2.5 text-xs font-mono text-accent"
+            className="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 text-xs font-mono text-accent"
           >
             {["Java", "Spring Boot", "React.js", "Python", "REST APIs", "MySQL"].map((tag) => (
               <span key={tag} className="px-3 py-1.5 rounded-lg bg-white/[0.02] border border-white/10 hover:border-accent hover:text-white hover:bg-accent/5 transition-all duration-300">
@@ -255,7 +255,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.7 }}
-            className="flex flex-wrap items-center gap-4 mt-4 relative"
+            className="flex flex-wrap items-center justify-center lg:justify-start gap-4 mt-4 relative w-full"
           >
             <Magnetic>
               <a 
@@ -307,7 +307,7 @@ export default function Hero() {
             style={{ x: ring1X, y: ring1Y }}
             animate={{ rotate: 360 }}
             transition={{ duration: 32, repeat: Infinity, ease: "linear" }}
-            className="absolute w-[360px] h-[360px] rounded-full border border-dashed border-white/5 pointer-events-none"
+            className="absolute w-[300px] h-[300px] sm:w-[360px] sm:h-[360px] rounded-full border border-dashed border-white/5 pointer-events-none"
           />
 
           {/* Layer 2: Glowing Middle Gradient Ring */}
@@ -315,7 +315,7 @@ export default function Hero() {
             style={{ x: ring2X, y: ring2Y }}
             animate={{ rotate: -360 }}
             transition={{ duration: 24, repeat: Infinity, ease: "linear" }}
-            className="absolute w-[310px] h-[310px] rounded-full border-2 border-transparent border-t-primary/30 border-b-accent/30 opacity-70 pointer-events-none"
+            className="absolute w-[260px] h-[260px] sm:w-[310px] sm:h-[310px] rounded-full border-2 border-transparent border-t-primary/30 border-b-accent/30 opacity-70 pointer-events-none"
           />
 
           {/* Layer 3: Main Parallax Avatar with Border Beam */}
@@ -323,7 +323,7 @@ export default function Hero() {
             style={{ x: avatarX, y: avatarY }}
             whileHover={{ scale: 1.02 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="relative w-[260px] h-[260px] rounded-full p-[2px] shadow-2xl flex items-center justify-center overflow-hidden cursor-pointer"
+            className="relative w-[220px] h-[220px] sm:w-[260px] sm:h-[260px] rounded-full p-[2px] shadow-2xl flex items-center justify-center overflow-hidden cursor-pointer"
           >
             {/* Moving Border Highlight */}
             <BorderBeam duration={8} colorFrom="#06B6D4" colorTo="#A855F7" />

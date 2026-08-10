@@ -66,7 +66,7 @@ export default function RecruiterDock() {
 
   return (
     <div 
-      className="fixed right-6 top-1/2 -translate-y-1/2 z-40 flex flex-col items-end gap-3 group/dock select-none"
+      className="fixed right-6 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col items-end gap-3 group/dock select-none"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

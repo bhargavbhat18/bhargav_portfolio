@@ -61,7 +61,7 @@ export default function Experience() {
           <h3 className="text-4xl font-heading font-bold">Experience</h3>
         </div>
 
-        <div ref={containerRef} className="relative ml-4 md:ml-8 space-y-16">
+        <div ref={containerRef} className="relative ml-6 md:ml-8 space-y-16">
           {/* Background track timeline line */}
           <div className="absolute left-0 top-3 bottom-3 w-[2px] bg-white/5 rounded-full" />
           
